@@ -1,0 +1,89 @@
+# GIT Commands and Steps
+
+Here is the text from your three images, keeping the same numbering, headings, format, and commands as closely as possible to your handwritten notes.
+
+## 1) To configure user
+
+```
+- git config --global user.name " "
+- git config --global user.email " "
+- git config --global --list
+```
+
+## 2) Tracking file changes
+
+```
+- git init
+- git add .
+- git status
+- git commit -m "Initial commit"
+- git log
+- git log --oneline
+```
+
+## 3) Uploading on GitHub
+
+```
+- git branch -M main
+- git remote add origin "URL.git"
+- git remote -v
+- git push -u origin main
+```
+
+## 4) Cloning
+
+```
+- git clone "URL.git"
+- cd REPO
+- git add "."
+- git commit -m "Update"
+- git push
+```
+
+## 5) Create branches & merge them
+
+```
+- git branch
+- git branch feature
+- git switch -c feature
+
+Make changes in the repo/file
+
+- git add "."
+- git commit -m "Adding new"
+- git switch main
+- git merge feature
+- git log --oneline --graph --all
+- git branch -d feature (delete feature)
+- git push origin --delete feature
+
+(Delete feature branch from remote copy if pushed)
+```
+
+## 6) Resolve a merge conflict
+
+→ Can happen by creating on separate branch & performed
+
+```
+- echo "Og content" > demo.txt
+- git add demo.txt
+- git commit -m "commit"
+- git branch -M main
+- git switch -c feature
+
+- echo "change-feature" > demo.txt
+- git add demo.txt
+- git commit -m ""
+
+- git switch main
+- echo "change-main"
+- git add demo.txt
+- git commit -m ""
+
+- git merge feature
+
+- git add demo.txt
+- git commit -m "Resolved"
+```
+
+Note: I have kept the commands and blank commit messages as written in your notes. In Section 6, the merge-conflict commands appear incomplete in a few places, so you may need to add the missing file redirection (`> demo.txt`) and actual commit messages when performing the practical.
