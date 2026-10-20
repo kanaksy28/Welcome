@@ -244,3 +244,19 @@ Jenkins dashboard opens successfully
 The official [Jenkins Windows installation guide](https://www.jenkins.io/doc/book/installing/windows/?utm_source=chatgpt.com) has further troubleshooting instructions.&#x20;
 
 One final point for your practical: installing Jenkins alone does not install Docker, Git, ngrok, Terraform, or WSL. If your assignment requires any of those tools, they must be available and configured on the lab PC too. In particular, if your Jenkins job runs WSL commands, you will need to configure the Jenkins Windows service account appropriately for access to the intended WSL environment.
+
+
+
+Part G — Common errors and solutions
+Error	Likely cause	What to do
+java is not recognized	Java is missing or PATH is incorrect	Install a supported JDK and verify java -version.
+Jenkins page does not open	Service stopped, wrong port, or startup failure	Check the Jenkins service and installation logs.
+Initial password file not found	Incorrect Jenkins home path or service account	Check the configured JENKINS_HOME and installation directory.
+sh command fails on Windows	Windows agent does not provide a Unix shell	Use bat for Windows, or configure a suitable Unix agent.
+bat command fails on Linux	Linux agent does not use Windows batch commands	Use sh for Linux.
+Git checkout fails	Wrong URL, branch, permissions or credentials	Verify repository access and the branch name.
+Pipeline syntax error	Missing braces, quotes or required sections	Check the pipeline, stages, stage and steps blocks.
+Build remains in queue	No available executor or agent	Check node status, executors and agent availability.
+Build fails at a command	Missing dependency or incorrect command	Read Console Output and test the command on the agent.
+Port 8080 is occupied	Another service is using the port	Stop the conflicting service or configure a different Jenkins port.
+Golden rule for troubleshooting: Open the failed build's Console Output and identify the first meaningful error before changing configuration.
