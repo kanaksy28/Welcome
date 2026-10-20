@@ -1,0 +1,152 @@
+Possible question: Create a Jenkins Pipeline that defines and displays environment variables.
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME = 'StudentApp'
+        VERSION = '1.0'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "Application: ${env.APP_NAME}"
+                echo "Version: ${env.VERSION}"
+            }
+        }
+    }
+}
+
+
+
+
+Pipeline with build parameters
+Possible question: Accept a project name from the user and display it during the build.
+pipeline {
+    agent any
+
+    parameters {
+        string(
+            name: 'PROJECT_NAME',
+            defaultValue: 'MyProject',
+            description: 'Enter project name'
+        )
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "Building project: ${params.PROJECT_NAME}"
+            }
+        }
+    }
+}
+
+
+
+Pipeline with a real command
+For a Windows-based Jenkins agent, you can execute a Windows batch command using bat:
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                bat 'echo Building application'
+                bat 'java -version'
+            }
+        }
+    }
+}
+
+For a Linux agent, use sh instead:
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'echo Building application'
+                sh 'java -version'
+            }
+        }
+    }
+}
+
+
+Pipeline that deliberately fails
+Possible question: Demonstrate the failure handling mechanism in Jenkins.
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Build started'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                error 'Test failed intentionally'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying application'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build successful'
+        }
+
+        failure {
+            echo 'Build failed'
+        }
+
+        always {
+            echo 'Execution finished'
+        }
+    }
+}
+
+
+
+
+Configure Jenkins to fetch the code
+1. Open the Jenkins dashboard.
+2. Create a Freestyle project named Git-Build.
+3. In Source Code Management, select Git.
+4. Enter your repository URL.
+5. Specify the branch, such as */main.
+6. Under Build Steps, select the appropriate command option for the agent.
+7. Enter a simple command to verify that the repository was checked out.
+8. Save and click Build Now.
+
+
+Pipeline that checks out Git code
+You can also use a Pipeline script to retrieve a repository:
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/YOUR_USERNAME/JenkinsDemo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Source code checked out'
+            }
+        }
+    }
+}
+
+
