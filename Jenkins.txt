@@ -1,0 +1,246 @@
+# Jenkins Installation and Configuration on Windows 11
+
+This guide covers the complete process for setting up Jenkins on your college lab PC, from installing Java to opening Jenkins in your browser and logging in for the first time.
+
+The steps assume you are using a Windows 11 PC and a local Jenkins installation for your DevOps practicals.
+
+## Before you start
+
+You will install and configure these components:
+
+1\. Java JDK
+
+The Java runtime Jenkins needs.
+
+2\. Jenkins LTS
+
+The stable release of the automation server.
+
+3\. Web browser
+
+Used to configure Jenkins and log in at `http://localhost:8080`.
+
+Important: Your college PC will have its own Jenkins installation and administrator account. You can choose the same username and password you use at home, but your existing Jenkins account will not transfer automatically.
+
+## Step 1: Install Java JDK
+
+Jenkins requires a compatible Java version. For a new installation, use a supported LTS JDK such as Java 21 or Java 25, after confirming compatibility with the Jenkins release you install.
+
+1. Open the official Java download page.
+2. Download a Windows x64 installer for the supported JDK.
+3. Run the installer and finish the installation.
+
+Official download: [Java JDK downloads](https://www.oracle.com/java/technologies/downloads/?utm_source=chatgpt.com)
+
+You can also use an OpenJDK distribution, such as [Eclipse Temurin](https://adoptium.net/?utm_source=chatgpt.com).
+
+### Verify Java installation
+
+Open Command Prompt (`Win + R` → type `cmd` → Enter) and execute:
+
+```
+java -version
+javac -version
+```
+
+You should see the installed Java version for both commands.
+
+If Windows says that `java` is not recognized, Java may not be added to your `PATH`. Reopen Command Prompt after installation and check the JDK installation and environment variables.
+
+## Step 2: Download Jenkins LTS for Windows
+
+1. Open the official Jenkins download page: [Download Jenkins](https://www.jenkins.io/download/?utm_source=chatgpt.com).
+
+2. Find the Stable (LTS) release.
+
+3. Under the LTS release, select Windows to download the Windows installer (`.msi`).&#x20;
+   Jenkins
+   +1
+
+4. Wait for the download to complete.
+
+Use the LTS version rather than the weekly release for your practical, unless your college specifically requires a particular version.
+
+## Step 3: Install Jenkins
+
+Locate the downloaded `.msi` file, double-click it, and follow the installation wizard.
+
+3.1 — Welcome screen
+
+Click Next to start the installation.
+
+3.2 — Installation folder
+
+Keep the default location unless you have a reason to change it. The usual path is:
+
+`C:\Program Files\Jenkins`
+
+3.3 — Service logon credentials
+
+Jenkins runs as a Windows service. Follow the installer’s service-account options.
+
+For a basic local demonstration, LocalSystem may be offered as a quick setup option. If your practical needs Jenkins to run commands through your Windows user account or access that user's WSL environment, configure a suitable Windows service account instead.
+
+3.4 — Select the port
+
+Keep port `8080` if it is available. Click Test Port if the installer offers it.
+
+If the port is occupied, choose an available port such as `8081`.
+
+3.5 — Select Java
+
+Select the compatible JDK installation you installed in Step 1. Make sure the version is supported by the Jenkins release.
+
+3.6 — Complete installation
+
+Continue through any remaining setup screens, click Install, approve the Windows administrator prompt if required, and click Finish.
+
+These steps follow the official Windows installation process.&#x20;
+
+Jenkins
+College lab note: If you do not have administrator permission to install software or configure a Windows service, ask the college lab administrator for permission before proceeding.
+
+## Step 4: Start Jenkins and verify the service
+
+Jenkins is normally installed as a Windows service, so you do not need to launch it manually every time.
+
+1. Press `Win + R`.
+2. Type `services.msc` and press Enter.
+3. Find the service named Jenkins.
+4. Check its status.
+
+If the status is Running
+
+Continue to Step 5.
+
+If the status is Stopped
+
+Right-click Jenkins and select Start. If it fails, check the service account, Java configuration, and Jenkins logs.
+
+You can also check the service from an Administrator Command Prompt:
+
+```
+sc query Jenkins
+```
+
+Look for `STATE : 4 RUNNING`.
+
+## Step 5: Open Jenkins in your browser
+
+Open Chrome or Edge and enter the address corresponding to the port selected during installation.
+
+Default Jenkins address
+
+## [http://localhost:8080](http://localhost:8080?utm_source=chatgpt.com)
+
+&#x20;Copy address Open Jenkins
+
+If you selected port `8081`, use `http://localhost:8081` instead.
+
+You should see the Unlock Jenkins page on your first visit. If the page does not open, confirm that the Jenkins service is running and that you are using the correct port.
+
+## Step 6: Find the initial administrator password
+
+Before you can log in, Jenkins asks you to unlock the installation with a one-time initial password.&#x20;
+
+For the default installation folder:
+
+1. Open File Explorer.
+2. Navigate to:
+
+`C:\Program Files\Jenkins\secrets`
+
+3. Find the file named `initialAdminPassword`.
+4. Open it using Notepad.
+5. Copy the password.
+
+If you installed Jenkins in a different folder, look for the `secrets\initialAdminPassword` file under the installation path specified by your setup.
+
+File to locate
+
+initialAdminPassword
+
+If access is denied, use an authorized administrator account or ask the lab administrator to retrieve the password for you.
+
+Return to the browser, paste the password into the Administrator password field, and click Continue.
+
+## Step 7: Install Jenkins plugins
+
+After unlocking Jenkins, you will reach the Customize Jenkins page.
+
+Choose Install suggested plugins.
+
+Jenkins will install the recommended plugins for common tasks, such as source control integration and build automation. Wait for the installation to finish.&#x20;
+
+You can install additional plugins later from Manage Jenkins → Plugins.
+
+For your DevOps practicals, the Git plugin is particularly useful when connecting Jenkins to a GitHub repository.
+
+## Step 8: Create your Jenkins administrator account
+
+After the plugins finish installing, Jenkins will show the Create First Admin User page.
+
+Enter your details:
+
+| Field            | What to enter                      |
+| ---------------- | ---------------------------------- |
+| Username         | A username of your choice          |
+| Password         | A strong password you can remember |
+| Confirm password | Enter the same password again      |
+| Full name        | Your name                          |
+| E-mail address   | Your e-mail address, if requested  |
+
+You can use the same Jenkins username and password as on your personal PC if you want, but this creates a new account on the lab PC.
+
+Click Save and Finish.
+
+When the Jenkins is ready screen appears, click Start using Jenkins. If prompted to restart Jenkins, follow the prompt and wait for it to become available.&#x20;
+
+## Step 9: Log in to Jenkins
+
+You should now reach the Jenkins dashboard.
+
+If a login page appears, enter the username and password you created in Step 8.
+
+You have now completed the initial installation and configuration.
+
+Your local address will be:
+
+`http://localhost:8080`
+
+## Step 10: Confirm everything is working
+
+Use this checklist before starting your practical.
+
+### Installation checklist
+
+0 of 7
+
+Java installed and verified
+
+Jenkins installed on Windows 11
+
+Jenkins service is running
+
+Initial administrator password accepted
+
+Suggested plugins installed
+
+Administrator account created
+
+Jenkins dashboard opens successfully
+
+## Common problems and solutions
+
+| Problem                                  | What to do                                                                                |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `localhost:8080` does not open           | Check that the Jenkins service is running and verify the port.                            |
+| Java error during installation           | Install a Java version supported by your Jenkins release and select the correct JDK path. |
+| Port 8080 is already occupied            | Select an available port during installation.                                             |
+| Cannot access the password file          | Check the installation path and request authorized administrator access.                  |
+| Jenkins service fails to start           | Check the Windows service account, Java configuration, and Jenkins logs.                  |
+| Cannot install Jenkins on the college PC | Ask the lab administrator for the required permissions.                                   |
+
+The official [Jenkins Windows installation guide](https://www.jenkins.io/doc/book/installing/windows/?utm_source=chatgpt.com) has further troubleshooting instructions.&#x20;
+
+One final point for your practical: installing Jenkins alone does not install Docker, Git, ngrok, Terraform, or WSL. If your assignment requires any of those tools, they must be available and configured on the lab PC too. In particular, if your Jenkins job runs WSL commands, you will need to configure the Jenkins Windows service account appropriately for access to the intended WSL environment.
