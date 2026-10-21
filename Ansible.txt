@@ -1,0 +1,61 @@
+Command Purpose
+ansible --version Check installed version
+ansible all -i inventory --list-hosts List selected hosts
+ansible-inventory -i inventory --list Display inventory details
+ansible-doc -l List available modules
+ansible-doc ansible.builtin.copy Read module documentation
+ansible-playbook playbook.yml --syntax-check Check playbook syntax
+ansible-playbook playbook.yml --check Preview supported changes
+ansible-playbook playbook.yml -v Display more execution details
+ansible-playbook playbook.yml --list-tasks List tasks without running them
+
+
+
+---
+- name: My first playbook
+  hosts: local
+  connection: local
+  become: true
+
+  tasks:
+    - name: Display a message
+      ansible.builtin.debug:
+        msg: "Hello from Ansible"
+
+
+
+
+---
+- name: Deploy Nginx locally
+  hosts: local
+  connection: local
+  become: true
+
+  tasks:
+    - name: Update apt package cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install Nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+
+    - name: Create custom webpage
+      ansible.builtin.copy:
+        content: |
+          <html>
+          <head><title>Ansible Practical</title></head>
+          <body>
+            <h1>Hello from Ansible!</h1>
+            <p>Local deployment successful.</p>
+          </body>
+          </html>
+        dest: /var/www/html/index.html
+        mode: "0644"
+
+    - name: Start and enable Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
