@@ -1,0 +1,159 @@
+import numpy as np
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.optimizers import Adam
+import matplotlib.pyplot as plt
+
+(trainX, trainy), (testX, testy) = mnist.load_data()
+
+trainX = trainX.astype('float32') / 255
+testX = testX.astype('float32') / 255
+
+print(trainX.shape)
+
+trainX = trainX.reshape((len(trainX), np.prod(trainX.shape[1:])))
+testX = testX.reshape((len(testX), np.prod(testX.shape[1:])))
+
+print(trainX.shape)
+
+noise_factor = 0.3
+
+trainX_noisy = trainX + noise_factor * np.random.normal(
+    loc=0.0,
+    scale=1.0,
+    size=trainX.shape
+)
+
+testX_noisy = testX + noise_factor * np.random.normal(
+    loc=0.0,
+    scale=1.0,
+    size=testX.shape
+)
+
+trainX_noisy = np.clip(trainX_noisy, 0., 1.)
+testX_noisy = np.clip(testX_noisy, 0., 1.)
+
+plt.figure(figsize = (8,8))
+
+for i in range(25):
+  plt.subplot(5,5,i+1)
+  plt.title(str(trainy[i]),fontsize = 16, color = 'black', pad = 2)
+  plt.imshow(trainX_noisy[i].reshape(1,28,28)[0], cmap = plt.cm.binary )
+  plt.xticks([])
+  plt.yticks([])
+
+plt.show()
+
+input_img = Input(shape=(784,))
+
+encoded = Dense(128, activation='sigmoid')(input_img)
+
+decoded = Dense(784, activation='sigmoid')(encoded)
+
+autoencoder = Model(input_img, decoded)
+
+autoencoder.compile(
+    optimizer='adam',
+    loss='mse',
+    metrics = ['mse']
+)
+
+autoencoder.fit(
+    trainX_noisy,
+    trainX,
+    epochs=10,
+    batch_size=256,
+    shuffle=True,
+    validation_data=(testX_noisy, testX)
+)
+
+denoised_imgs = autoencoder.predict(testX_noisy)
+
+n = 10
+
+plt.figure(figsize=(20, 6))
+
+for i in range(n):
+
+    # Noisy images
+    ax = plt.subplot(3, n, i + 1)
+    plt.imshow(testX_noisy[i].reshape(28, 28), cmap='gray')
+    plt.title("Noisy")
+    plt.xticks([])
+    plt.yticks([])
+
+    # Denoised images
+    ax = plt.subplot(3, n, i + 1 + n)
+    plt.imshow(denoised_imgs[i].reshape(28, 28), cmap='gray')
+    plt.title("Denoised")
+    plt.xticks([])
+    plt.yticks([])
+
+    # Original images
+    ax = plt.subplot(3, n, i + 1 + 2*n)
+    plt.imshow(testX[i].reshape(28, 28), cmap='gray')
+    plt.title("Original")
+    plt.xticks([])
+    plt.yticks([])
+
+plt.tight_layout()
+plt.show()
+
+--------------------------------------------------------------------------------------------
+from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras import regularizers
+
+input_img = Input(shape=(784,))
+
+encoded = Dense(
+    128,
+    activation='sigmoid',
+    activity_regularizer=regularizers.l1(1e-5)
+)(input_img)
+
+decoded = Dense(784, activation='sigmoid')(encoded)
+
+autoencoder = Model(input_img, decoded)
+
+autoencoder.compile(
+    optimizer=Adam(),
+    loss='mse',
+    metrics=['mse']
+)
+
+autoencoder.summary()
+
+history = autoencoder.fit(
+    trainX,
+    trainX,
+    epochs=10,
+    batch_size=256,
+    shuffle=True,
+    validation_data=(testX, testX)
+)
+
+reconstructed_imgs = autoencoder.predict(testX)
+
+n = 10
+
+plt.figure(figsize=(20, 4))
+
+for i in range(n):
+
+    # Original
+    ax = plt.subplot(2, n, i + 1)
+    plt.imshow(testX[i].reshape(28, 28), cmap='gray')
+    plt.title("Original")
+    plt.xticks([])
+    plt.yticks([])
+
+    # Reconstructed
+    ax = plt.subplot(2, n, i + 1 + n)
+    plt.imshow(reconstructed_imgs[i].reshape(28, 28), cmap='gray')
+    plt.title("Reconstructed")
+    plt.xticks([])
+    plt.yticks([])
+
+plt.tight_layout()
+plt.show()
